@@ -31,8 +31,8 @@ Snowflake and Microsoft Fabric through a unified AI Foundry orchestrator.**
 |---|---|---|
 | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="20"> | **Cortex Agent** | Text-to-SQL via Cortex Analyst + semantic search via 3 Cortex Search services |
 | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="20"> | **MCP Server** | Exposes the Cortex Agent over the Model Context Protocol (SSE) for external consumption |
-| <img src="https://cdn.simpleicons.org/microsoftazure/0078D4" width="20"> | **AI Foundry Orchestrator** | GPT-5.2 powered agent that routes queries to the right data source |
-| <img src="https://cdn.simpleicons.org/microsoftazure/742774" width="20"> | **Fabric Data Agent** | NL2SQL over Lakehouse Delta tables for supplementary datasets |
+| <img src="https://img.shields.io/badge/-0078D4?style=flat-square&logo=microsoft&logoColor=white" height="20"> | **AI Foundry Orchestrator** | GPT-5.2 powered agent that routes queries to the right data source |
+| <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="20"> | **Fabric Data Agent** | NL2SQL over Lakehouse Delta tables for supplementary datasets |
 | | **Cross-Platform Queries** | Single question can pull data from both Snowflake and Fabric simultaneously |
 
 ---
@@ -66,10 +66,10 @@ Snowflake and Microsoft Fabric through a unified AI Foundry orchestrator.**
 
 | Layer | Platform | Purpose |
 |---|---|---|
-| **AI Foundry Orchestrator** | <img src="https://cdn.simpleicons.org/microsoftazure/0078D4" width="14"> Microsoft Azure | Routes user questions to the right data source |
+| **AI Foundry Orchestrator** | <img src="https://img.shields.io/badge/-0078D4?style=flat-square&logo=microsoft&logoColor=white" height="14"> Microsoft Azure | Routes user questions to the right data source |
 | **Snowflake MCP Server** | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="14"> Snowflake | Exposes Cortex Agent as an MCP tool over SSE |
 | **Cortex Agent** | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="14"> Snowflake | Orchestrates Cortex Analyst (SQL) + 3 Cortex Search services |
-| **Fabric Data Agent** | <img src="https://cdn.simpleicons.org/microsoftazure/742774" width="14"> Microsoft Fabric | NL2SQL over Lakehouse tables |
+| **Fabric Data Agent** | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="14"> Microsoft Fabric | NL2SQL over Lakehouse tables |
 
 ---
 
@@ -80,10 +80,10 @@ Snowflake and Microsoft Fabric through a unified AI Foundry orchestrator.**
 | Phase | Platform | Steps | What You Build |
 |:---:|---|---|---|
 | **1** | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="16"> Snowflake | Steps 1–9 | Database, tables, data, Cortex Search, Semantic View, Agent, MCP Server |
-| **2** | <img src="https://cdn.simpleicons.org/microsoftazure/742774" width="16"> Fabric | Steps 10–15 | Workspace, Lakehouse, Delta tables, Fabric Data Agent |
-| **3** | <img src="https://cdn.simpleicons.org/microsoftazure/0078D4" width="16"> AI Foundry | Steps 16–22 | GPT-5.2 deployment, orchestrator agent, MCP + Fabric tool wiring |
+| **2** | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="16"> Fabric | Steps 10–15 | Workspace, Lakehouse, Delta tables, Fabric Data Agent |
+| **3** | <img src="https://img.shields.io/badge/-0078D4?style=flat-square&logo=microsoft&logoColor=white" height="16"> AI Foundry | Steps 16–22 | GPT-5.2 deployment, orchestrator agent, MCP + Fabric tool wiring |
 | **4** | All | Step 23 | End-to-end testing across all platforms |
-| **5** | <img src="https://cdn.simpleicons.org/microsoftazure/0078D4" width="16"> Azure | Steps 24–25 | Teams/Copilot deployment, API access |
+| **5** | <img src="https://img.shields.io/badge/-0078D4?style=flat-square&logo=microsoft&logoColor=white" height="16"> Azure | Steps 24–25 | Teams/Copilot deployment, API access |
 
 ---
 
@@ -92,8 +92,8 @@ Snowflake and Microsoft Fabric through a unified AI Foundry orchestrator.**
 | Requirement | Details |
 |---|---|
 | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="14"> **Snowflake account** | With ACCOUNTADMIN role (or equivalent) and Cortex features enabled |
-| <img src="https://cdn.simpleicons.org/microsoftazure/0078D4" width="14"> **Azure subscription** | With access to Microsoft Foundry (formerly Azure AI Foundry) |
-| <img src="https://cdn.simpleicons.org/microsoftazure/742774" width="14"> **Microsoft Fabric** | F2 or higher capacity (or Power BI Premium P1+) with Fabric enabled |
+| <img src="https://img.shields.io/badge/-0078D4?style=flat-square&logo=microsoft&logoColor=white" height="14"> **Azure subscription** | With access to Microsoft Foundry (formerly Azure AI Foundry) |
+| <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="14"> **Microsoft Fabric** | F2 or higher capacity (or Power BI Premium P1+) with Fabric enabled |
 | **Azure CLI** | Installed and authenticated (`az login`) — for SDK-based agent creation |
 | <img src="https://cdn.simpleicons.org/python/3776AB" width="14"> **Python 3.10+** | For SDK-based agent creation (optional) |
 
@@ -412,7 +412,7 @@ SHOW MCP SERVERS IN SUPPLY_CHAIN_DEMO.PUBLIC;
 
 <div align="center">
 
-## <img src="https://cdn.simpleicons.org/microsoftazure/742774" width="28"> Phase 2: Microsoft Fabric Setup
+## <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="28"> Phase 2: Microsoft Fabric Setup
 
 *Create a Fabric workspace with a Lakehouse containing supplementary datasets.*
 
@@ -615,7 +615,7 @@ Use the chat interface to test:
 
 <div align="center">
 
-## <img src="https://cdn.simpleicons.org/microsoftazure/0078D4" width="28"> Phase 3: Microsoft AI Foundry — Orchestrator Agent
+## <img src="https://img.shields.io/badge/-0078D4?style=flat-square&logo=microsoft&logoColor=white" height="28"> Phase 3: Microsoft AI Foundry — Orchestrator Agent
 
 *Create the orchestrator agent that connects to both the Snowflake MCP Server and the Fabric Data Agent.*
 
@@ -851,8 +851,8 @@ The orchestrator instructions (`setup/10_foundry_instructions.md`) contain routi
 | Supplier emails | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Search |
 | Incident reports | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Search |
 | Warehouse inspections | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Search |
-| Freight costs, carrier invoices | <img src="https://cdn.simpleicons.org/microsoftazure/742774" width="12"> Fabric | Data Agent (NL2SQL) |
-| Customer returns, complaints | <img src="https://cdn.simpleicons.org/microsoftazure/742774" width="12"> Fabric | Data Agent (NL2SQL) |
+| Freight costs, carrier invoices | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="12"> Fabric | Data Agent (NL2SQL) |
+| Customer returns, complaints | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="12"> Fabric | Data Agent (NL2SQL) |
 | Cross-platform analysis | Both | MCP + Data Agent |
 
 ---
@@ -880,7 +880,7 @@ In your Foundry agent's chat interface, test these queries:
 5. "Show me warehouse inspection reports with Poor ratings"
 6. "What incidents involved temperature violations?"
 
-#### <img src="https://cdn.simpleicons.org/microsoftazure/742774" width="16"> Fabric-routed queries
+#### <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="16"> Fabric-routed queries
 
 7. "Which carriers have the highest freight costs per kg?"
 8. "Show me all disputed freight invoices"
@@ -1027,7 +1027,7 @@ DROP SECURITY INTEGRATION IF EXISTS foundry_mcp_oauth;
 
 <a href="https://www.snowflake.com"><img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="40" alt="Snowflake"></a>
 &nbsp;&nbsp;&nbsp;
-<a href="https://ai.azure.com"><img src="https://cdn.simpleicons.org/microsoftazure/0078D4" width="40" alt="Microsoft Azure"></a>
+<a href="https://ai.azure.com"><img src="https://img.shields.io/badge/Microsoft-0078D4?style=for-the-badge&logo=microsoft&logoColor=white" alt="Microsoft Azure"></a>
 &nbsp;&nbsp;&nbsp;
 <a href="https://openai.com"><img src="https://cdn.simpleicons.org/openai/412991" width="40" alt="OpenAI"></a>
 &nbsp;&nbsp;&nbsp;
