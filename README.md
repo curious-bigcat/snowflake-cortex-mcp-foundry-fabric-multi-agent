@@ -1,6 +1,6 @@
 <div align="center">
 
-# Snowflake Cortex MCP + Microsoft AI Foundry + Fabric Data Agents
+# Building a Multi-Agent Orchestration with Snowflake Cortex MCP, Cortex Agents with Microsoft AI Foundry Agenda and Microsoft Fabric
 
 ### Snowflake Cortex MCP + Microsoft AI Foundry + Fabric Data Agents
 
