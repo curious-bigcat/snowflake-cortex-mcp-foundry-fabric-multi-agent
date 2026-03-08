@@ -1,6 +1,6 @@
 <div align="center">
 
-# Multi-Agent Orchestrator
+# Snowflake Cortex MCP + Microsoft AI Foundry + Fabric Data Agents
 
 ### Snowflake Cortex MCP + Microsoft AI Foundry + Fabric Data Agents
 
