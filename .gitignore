@@ -1,0 +1,23 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+
+# Working notes (not part of the demo)
+agent.md
+setup/project.md
+setup/11_churn_database_setup.sql
+setup/12_churn_create_and_load_data.sql
+setup/13_churn_semantic_view.sql
+setup/14_churn_cortex_agent.sql
+
+# Environment
+.env

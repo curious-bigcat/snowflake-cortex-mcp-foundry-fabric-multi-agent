@@ -1,179 +1,132 @@
--- =============================================================================
--- STEP 2: Create All Tables
--- =============================================================================
--- Creates all 13 tables for the supply chain demo.
--- Structured (7), Semi-structured (3), Unstructured (3)
--- =============================================================================
+/*=============================================================
+  02 — Create Tables
+  8 tables (5 structured, 1 semi-structured, 2 unstructured)
+  + 1 internal stage
+  NOTE: Fabric Logistics & Sales domain tables (SHIPMENTS,
+        STORE_SALES, SHIPMENT_UPDATES, DELIVERY_TRACKING_EVENTS)
+        and LOGISTICS_INCIDENT_REPORTS are excluded — they live
+        in Microsoft Fabric.
+=============================================================*/
 
 USE DATABASE SUPPLY_CHAIN_DEMO;
 USE SCHEMA PUBLIC;
 USE WAREHOUSE SUPPLY_CHAIN_WH;
 
--- =====================
--- STRUCTURED TABLES
--- =====================
+-- ============================================================
+-- STRUCTURED TABLES (5) — Supply & Inventory Domain
+-- ============================================================
 
--- Supplier master data
+-- 1. SUPPLIERS — supplier master data
 CREATE OR REPLACE TABLE SUPPLIERS (
-    SUPPLIER_ID NUMBER(38,0),
-    SUPPLIER_NAME VARCHAR(100),
-    CONTACT_NAME VARCHAR(100),
-    REGION VARCHAR(50),
-    COUNTRY VARCHAR(50),
-    LEAD_TIME_DAYS NUMBER(38,0),
+    SUPPLIER_ID    INT PRIMARY KEY,
+    SUPPLIER_NAME  VARCHAR(100),
+    CONTACT_NAME   VARCHAR(100),
+    REGION         VARCHAR(50),
+    COUNTRY        VARCHAR(50),
+    LEAD_TIME_DAYS INT,
     RELIABILITY_SCORE FLOAT,
     CONTRACT_START DATE,
-    CONTRACT_END DATE,
-    PAYMENT_TERMS VARCHAR(30)
+    CONTRACT_END   DATE,
+    PAYMENT_TERMS  VARCHAR(30)
 );
 
--- Product catalog
+-- 2. PRODUCTS — product catalog
 CREATE OR REPLACE TABLE PRODUCTS (
-    PRODUCT_ID NUMBER(38,0),
-    PRODUCT_NAME VARCHAR(150),
-    CATEGORY VARCHAR(50),
-    SUBCATEGORY VARCHAR(50),
-    UNIT_COST FLOAT,
-    UNIT_PRICE FLOAT,
-    REORDER_POINT NUMBER(38,0),
-    REORDER_QTY NUMBER(38,0),
-    SUPPLIER_ID NUMBER(38,0),
-    WEIGHT_KG FLOAT,
+    PRODUCT_ID    INT PRIMARY KEY,
+    PRODUCT_NAME  VARCHAR(150),
+    CATEGORY      VARCHAR(50),
+    SUBCATEGORY   VARCHAR(50),
+    UNIT_COST     FLOAT,
+    UNIT_PRICE    FLOAT,
+    REORDER_POINT INT,
+    REORDER_QTY   INT,
+    SUPPLIER_ID   INT REFERENCES SUPPLIERS(SUPPLIER_ID),
+    WEIGHT_KG     FLOAT,
     IS_PERISHABLE BOOLEAN
 );
 
--- Warehouse master data
+-- 3. WAREHOUSES — warehouse master data
 CREATE OR REPLACE TABLE WAREHOUSES (
-    WAREHOUSE_ID NUMBER(38,0),
+    WAREHOUSE_ID   INT PRIMARY KEY,
     WAREHOUSE_NAME VARCHAR(100),
-    CITY VARCHAR(50),
+    CITY           VARCHAR(50),
     STATE_PROVINCE VARCHAR(50),
-    COUNTRY VARCHAR(50),
-    CAPACITY_SQFT NUMBER(38,0),
+    COUNTRY        VARCHAR(50),
+    CAPACITY_SQFT  INT,
     WAREHOUSE_TYPE VARCHAR(30)
 );
 
--- Inventory levels
+-- 4. INVENTORY — current inventory levels
 CREATE OR REPLACE TABLE INVENTORY (
-    INVENTORY_ID NUMBER(38,0) AUTOINCREMENT START 1 INCREMENT 1,
-    PRODUCT_ID NUMBER(38,0),
-    WAREHOUSE_ID NUMBER(38,0),
-    QUANTITY_ON_HAND NUMBER(38,0),
-    QUANTITY_RESERVED NUMBER(38,0),
-    QUANTITY_AVAILABLE NUMBER(38,0),
-    LAST_RESTOCK_DATE DATE,
-    DAYS_OF_SUPPLY NUMBER(38,0)
+    INVENTORY_ID       INT AUTOINCREMENT PRIMARY KEY,
+    PRODUCT_ID         INT REFERENCES PRODUCTS(PRODUCT_ID),
+    WAREHOUSE_ID       INT REFERENCES WAREHOUSES(WAREHOUSE_ID),
+    QUANTITY_ON_HAND   INT,
+    QUANTITY_RESERVED  INT,
+    QUANTITY_AVAILABLE INT,
+    LAST_RESTOCK_DATE  DATE,
+    DAYS_OF_SUPPLY     INT
 );
 
--- Purchase orders
+-- 5. PURCHASE_ORDERS — procurement orders
 CREATE OR REPLACE TABLE PURCHASE_ORDERS (
-    PO_ID NUMBER(38,0),
-    SUPPLIER_ID NUMBER(38,0),
-    PRODUCT_ID NUMBER(38,0),
-    QUANTITY_ORDERED NUMBER(38,0),
-    UNIT_COST FLOAT,
-    TOTAL_COST FLOAT,
-    ORDER_DATE DATE,
+    PO_ID                  INT PRIMARY KEY,
+    SUPPLIER_ID            INT REFERENCES SUPPLIERS(SUPPLIER_ID),
+    PRODUCT_ID             INT REFERENCES PRODUCTS(PRODUCT_ID),
+    ORDER_DATE             DATE,
     EXPECTED_DELIVERY_DATE DATE,
-    ACTUAL_DELIVERY_DATE DATE,
-    STATUS VARCHAR(30),
-    DELAY_DAYS NUMBER(38,0)
+    ACTUAL_DELIVERY_DATE   DATE,
+    STATUS                 VARCHAR(30),
+    QUANTITY_ORDERED       INT,
+    UNIT_COST              FLOAT,
+    TOTAL_COST             FLOAT,
+    DELAY_DAYS             INT DEFAULT 0
 );
 
--- Shipments
-CREATE OR REPLACE TABLE SHIPMENTS (
-    SHIPMENT_ID NUMBER(38,0),
-    PO_ID NUMBER(38,0),
-    CARRIER VARCHAR(50),
-    TRACKING_NUMBER VARCHAR(30),
-    STATUS VARCHAR(30),
-    SHIPPED_DATE DATE,
-    ESTIMATED_ARRIVAL DATE,
-    ACTUAL_ARRIVAL DATE,
-    ORIGIN_CITY VARCHAR(50),
-    DESTINATION_WAREHOUSE_ID NUMBER(38,0),
-    WEIGHT_KG FLOAT
-);
+-- ============================================================
+-- SEMI-STRUCTURED TABLE (1) — VARIANT column for JSON
+-- ============================================================
 
--- Store sales
-CREATE OR REPLACE TABLE STORE_SALES (
-    SALE_ID NUMBER(38,0),
-    PRODUCT_ID NUMBER(38,0),
-    STORE_ID NUMBER(38,0),
-    QUANTITY_SOLD NUMBER(38,0),
-    UNIT_PRICE FLOAT,
-    REVENUE FLOAT,
-    SALE_DATE DATE,
-    CHANNEL VARCHAR(20)
-);
-
--- ============================
--- SEMI-STRUCTURED TABLES (JSON)
--- ============================
-
--- Shipment tracking updates (JSON)
-CREATE OR REPLACE TABLE SHIPMENT_UPDATES (
-    UPDATE_ID NUMBER(38,0) AUTOINCREMENT START 1 INCREMENT 1,
-    SHIPMENT_ID NUMBER(38,0),
-    EVENT_TIMESTAMP TIMESTAMP_NTZ(9),
-    UPDATE_DATA VARIANT
-);
-
--- IoT sensor logs from warehouses (JSON)
+-- 6. IOT_SENSOR_LOGS — warehouse sensor readings as JSON
 CREATE OR REPLACE TABLE IOT_SENSOR_LOGS (
-    LOG_ID NUMBER(38,0) AUTOINCREMENT START 1 INCREMENT 1,
-    WAREHOUSE_ID NUMBER(38,0),
-    SENSOR_TIMESTAMP TIMESTAMP_NTZ(9),
-    SENSOR_DATA VARIANT
+    LOG_ID          INT AUTOINCREMENT PRIMARY KEY,
+    WAREHOUSE_ID    INT,
+    LOG_TIMESTAMP   TIMESTAMP,
+    SENSOR_PAYLOAD  VARIANT
 );
 
--- Delivery tracking events (JSON)
-CREATE OR REPLACE TABLE DELIVERY_TRACKING_EVENTS (
-    EVENT_ID NUMBER(38,0) AUTOINCREMENT START 1 INCREMENT 1,
-    SHIPMENT_ID NUMBER(38,0),
-    EVENT_TIMESTAMP TIMESTAMP_NTZ(9),
-    TRACKING_DATA VARIANT
-);
+-- ============================================================
+-- UNSTRUCTURED TEXT TABLES (2)
+-- NOTE: LOGISTICS_INCIDENT_REPORTS moved to Microsoft Fabric
+-- ============================================================
 
--- ============================
--- UNSTRUCTURED TEXT TABLES
--- ============================
-
--- Supplier email communications
+-- 7. SUPPLIER_EMAILS — supplier communications
 CREATE OR REPLACE TABLE SUPPLIER_EMAILS (
-    EMAIL_ID NUMBER(38,0),
+    EMAIL_ID      INT AUTOINCREMENT PRIMARY KEY,
+    SUPPLIER_ID   INT REFERENCES SUPPLIERS(SUPPLIER_ID),
     SUPPLIER_NAME VARCHAR(100),
-    SUPPLIER_ID NUMBER(38,0),
-    SUBJECT VARCHAR(200),
-    EMAIL_BODY VARCHAR(5000),
-    DATE_SENT DATE,
-    SENDER VARCHAR(100),
-    PRIORITY VARCHAR(20)
+    SENDER        VARCHAR(150),
+    SUBJECT       VARCHAR(200),
+    EMAIL_BODY    VARCHAR(5000),
+    DATE_SENT     DATE,
+    PRIORITY      VARCHAR(20)
 );
 
--- Logistics incident reports
-CREATE OR REPLACE TABLE LOGISTICS_INCIDENT_REPORTS (
-    REPORT_ID NUMBER(38,0),
-    INCIDENT_TYPE VARCHAR(50),
-    WAREHOUSE_ID NUMBER(38,0),
-    SEVERITY VARCHAR(20),
-    REPORT_DATE DATE,
-    REPORTED_BY VARCHAR(100),
-    REPORT_TEXT VARCHAR(5000),
-    STATUS VARCHAR(20),
-    RESOLUTION_DATE DATE
-);
-
--- Warehouse inspection notes
+-- 8. WAREHOUSE_INSPECTION_NOTES — facility inspections
 CREATE OR REPLACE TABLE WAREHOUSE_INSPECTION_NOTES (
-    INSPECTION_ID NUMBER(38,0),
-    WAREHOUSE_ID NUMBER(38,0),
-    INSPECTION_DATE DATE,
-    INSPECTOR VARCHAR(100),
-    INSPECTION_NOTES VARCHAR(5000),
-    OVERALL_RATING VARCHAR(20),
-    FOLLOW_UP_REQUIRED BOOLEAN
+    INSPECTION_ID      INT AUTOINCREMENT PRIMARY KEY,
+    WAREHOUSE_ID       INT REFERENCES WAREHOUSES(WAREHOUSE_ID),
+    WAREHOUSE_NAME     VARCHAR(100),
+    INSPECTION_DATE    DATE,
+    INSPECTOR          VARCHAR(100),
+    OVERALL_RATING     VARCHAR(20),
+    FOLLOW_UP_REQUIRED BOOLEAN,
+    INSPECTION_NOTES   VARCHAR(5000)
 );
 
--- Create internal stage for semantic model files
-CREATE STAGE IF NOT EXISTS SEMANTIC_MODELS;
+-- ============================================================
+-- STAGE — for semantic model YAML (if needed)
+-- ============================================================
+
+CREATE OR REPLACE STAGE SEMANTIC_MODELS
+  DIRECTORY = (ENABLE = TRUE);

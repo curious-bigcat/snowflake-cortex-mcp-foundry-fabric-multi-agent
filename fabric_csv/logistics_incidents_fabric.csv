@@ -1,0 +1,61 @@
+incident_id,shipment_id,carrier_id,warehouse_id,store_id,incident_date,incident_type,severity,description,delay_hours,resolution
+FINC-000,SHP-0328,CAR-010,WH-003,STR-028,2025-10-12,Vehicle Accident,Critical,Logistics incident during transit from WH-003 to STR-028. Customs inspection held shipment for additional documentation.,46.0,Closed
+FINC-001,SHP-0148,CAR-009,WH-010,STR-004,2025-09-07,Dock Congestion,Critical,Logistics incident during transit from WH-010 to STR-004. Congestion at receiving dock pushed delivery to next day.,54.0,Closed
+FINC-002,SHP-0098,CAR-011,WH-005,STR-001,2025-09-04,Route Closure,Medium,Logistics incident during transit from WH-005 to STR-001. Shipment was delayed due to unexpected road closure.,28.7,Escalated
+FINC-003,SHP-0070,CAR-007,WH-008,STR-017,2025-09-23,Fuel Shortage,High,Logistics incident during transit from WH-008 to STR-017. Carrier reported fuel shortage at regional depot.,50.4,Closed
+FINC-004,SHP-0185,CAR-002,WH-002,STR-016,2025-10-10,Vehicle Accident,Critical,Logistics incident during transit from WH-002 to STR-016. Shipment was delayed due to unexpected road closure.,71.8,Escalated
+FINC-005,SHP-0153,CAR-001,WH-009,STR-027,2025-10-24,Fuel Shortage,Low,Logistics incident during transit from WH-009 to STR-027. Shipment was delayed due to unexpected road closure.,46.7,Escalated
+FINC-006,SHP-0175,CAR-012,WH-006,STR-014,2026-02-04,Vehicle Accident,Medium,Logistics incident during transit from WH-006 to STR-014. Driver scheduling conflict caused 24-hour delay at origin hub.,48.7,Escalated
+FINC-007,SHP-0228,CAR-003,WH-006,STR-029,2026-03-09,Vehicle Breakdown,Critical,Logistics incident during transit from WH-006 to STR-029. Carrier reported fuel shortage at regional depot.,58.4,Pending
+FINC-008,SHP-0374,CAR-014,WH-008,STR-013,2025-06-10,Driver Shortage,Low,Logistics incident during transit from WH-008 to STR-013. Carrier reported fuel shortage at regional depot.,20.6,Closed
+FINC-009,SHP-0355,CAR-006,WH-009,STR-001,2026-02-10,Cargo Theft Attempt,Low,Logistics incident during transit from WH-009 to STR-001. Shipment was delayed due to unexpected road closure.,44.1,Resolved
+FINC-010,SHP-0369,CAR-000,WH-003,STR-003,2026-02-09,Traffic Delay,High,Logistics incident during transit from WH-003 to STR-003. Severe weather conditions forced route change adding 8 hours.,42.6,Closed
+FINC-011,SHP-0250,CAR-002,WH-005,STR-012,2025-06-09,Route Closure,Low,Logistics incident during transit from WH-005 to STR-012. Customs inspection held shipment for additional documentation.,34.3,Resolved
+FINC-012,SHP-0253,CAR-004,WH-004,STR-001,2025-09-05,Vehicle Breakdown,High,Logistics incident during transit from WH-004 to STR-001. Congestion at receiving dock pushed delivery to next day.,14.7,Escalated
+FINC-013,SHP-0063,CAR-012,WH-006,STR-019,2025-07-03,Fuel Shortage,Critical,Logistics incident during transit from WH-006 to STR-019. Carrier reported fuel shortage at regional depot.,34.0,Escalated
+FINC-014,SHP-0229,CAR-009,WH-006,STR-009,2025-05-27,Route Closure,High,Logistics incident during transit from WH-006 to STR-009. Severe weather conditions forced route change adding 8 hours.,33.2,Resolved
+FINC-015,SHP-0204,CAR-008,WH-010,STR-010,2025-07-01,Dock Congestion,High,Logistics incident during transit from WH-010 to STR-010. Vehicle experienced mechanical failure requiring roadside repair.,41.1,Escalated
+FINC-016,SHP-0254,CAR-010,WH-010,STR-023,2025-06-03,Weather Disruption,Low,Logistics incident during transit from WH-010 to STR-023. Customs inspection held shipment for additional documentation.,8.2,Escalated
+FINC-017,SHP-0392,CAR-008,WH-007,STR-011,2025-09-03,Route Closure,Medium,Logistics incident during transit from WH-007 to STR-011. Shipment was delayed due to unexpected road closure.,66.0,Resolved
+FINC-018,SHP-0256,CAR-014,WH-004,STR-012,2025-11-14,Cargo Theft Attempt,Low,Logistics incident during transit from WH-004 to STR-012. Carrier reported fuel shortage at regional depot.,15.0,Closed
+FINC-019,SHP-0128,CAR-001,WH-007,STR-009,2025-08-20,Customs Hold,Medium,Logistics incident during transit from WH-007 to STR-009. Severe weather conditions forced route change adding 8 hours.,58.4,Escalated
+FINC-020,SHP-0102,CAR-012,WH-004,STR-010,2025-12-28,Route Closure,Critical,Logistics incident during transit from WH-004 to STR-010. Shipment was delayed due to unexpected road closure.,15.3,Escalated
+FINC-021,SHP-0320,CAR-008,WH-005,STR-027,2025-04-02,Vehicle Accident,High,Logistics incident during transit from WH-005 to STR-027. Driver scheduling conflict caused 24-hour delay at origin hub.,45.3,Resolved
+FINC-022,SHP-0126,CAR-008,WH-004,STR-016,2025-04-04,Traffic Delay,Low,Logistics incident during transit from WH-004 to STR-016. Customs inspection held shipment for additional documentation.,20.4,Escalated
+FINC-023,SHP-0336,CAR-012,WH-007,STR-010,2026-01-04,Fuel Shortage,High,Logistics incident during transit from WH-007 to STR-010. Driver scheduling conflict caused 24-hour delay at origin hub.,9.3,Escalated
+FINC-024,SHP-0391,CAR-006,WH-001,STR-001,2025-07-31,Route Closure,High,Logistics incident during transit from WH-001 to STR-001. Driver scheduling conflict caused 24-hour delay at origin hub.,59.8,Pending
+FINC-025,SHP-0347,CAR-002,WH-001,STR-022,2025-03-19,Dock Congestion,Critical,Logistics incident during transit from WH-001 to STR-022. Driver scheduling conflict caused 24-hour delay at origin hub.,17.7,Pending
+FINC-026,SHP-0155,CAR-001,WH-004,STR-012,2025-09-04,Customs Hold,High,Logistics incident during transit from WH-004 to STR-012. Vehicle experienced mechanical failure requiring roadside repair.,2.9,Pending
+FINC-027,SHP-0012,CAR-009,WH-004,STR-015,2026-02-09,Customs Hold,Low,Logistics incident during transit from WH-004 to STR-015. Congestion at receiving dock pushed delivery to next day.,40.6,Pending
+FINC-028,SHP-0260,CAR-006,WH-006,STR-007,2025-05-26,Vehicle Accident,Low,Logistics incident during transit from WH-006 to STR-007. Carrier reported fuel shortage at regional depot.,42.3,Closed
+FINC-029,SHP-0166,CAR-012,WH-004,STR-001,2025-12-04,Dock Congestion,Low,Logistics incident during transit from WH-004 to STR-001. Severe weather conditions forced route change adding 8 hours.,27.5,Pending
+FINC-030,SHP-0201,CAR-012,WH-007,STR-011,2025-09-24,Traffic Delay,High,Logistics incident during transit from WH-007 to STR-011. Severe weather conditions forced route change adding 8 hours.,62.2,Pending
+FINC-031,SHP-0341,CAR-002,WH-009,STR-021,2025-07-15,Traffic Delay,Low,Logistics incident during transit from WH-009 to STR-021. Congestion at receiving dock pushed delivery to next day.,23.9,Pending
+FINC-032,SHP-0221,CAR-008,WH-010,STR-007,2026-02-23,Customs Hold,Medium,Logistics incident during transit from WH-010 to STR-007. Congestion at receiving dock pushed delivery to next day.,60.6,Closed
+FINC-033,SHP-0393,CAR-007,WH-004,STR-005,2026-02-09,Customs Hold,Low,Logistics incident during transit from WH-004 to STR-005. Shipment was delayed due to unexpected road closure.,68.7,Pending
+FINC-034,SHP-0015,CAR-002,WH-002,STR-014,2025-07-24,Vehicle Accident,Critical,Logistics incident during transit from WH-002 to STR-014. Severe weather conditions forced route change adding 8 hours.,35.4,Pending
+FINC-035,SHP-0039,CAR-006,WH-004,STR-023,2025-07-09,Traffic Delay,Medium,Logistics incident during transit from WH-004 to STR-023. Congestion at receiving dock pushed delivery to next day.,19.6,Resolved
+FINC-036,SHP-0382,CAR-000,WH-010,STR-007,2025-06-22,Fuel Shortage,High,Logistics incident during transit from WH-010 to STR-007. Driver scheduling conflict caused 24-hour delay at origin hub.,17.1,Closed
+FINC-037,SHP-0195,CAR-009,WH-006,STR-029,2025-10-06,Route Closure,High,Logistics incident during transit from WH-006 to STR-029. Congestion at receiving dock pushed delivery to next day.,57.9,Closed
+FINC-038,SHP-0090,CAR-013,WH-005,STR-029,2025-07-13,Vehicle Breakdown,Critical,Logistics incident during transit from WH-005 to STR-029. Carrier reported fuel shortage at regional depot.,54.8,Resolved
+FINC-039,SHP-0047,CAR-013,WH-008,STR-003,2026-02-07,Vehicle Accident,Low,Logistics incident during transit from WH-008 to STR-003. Carrier reported fuel shortage at regional depot.,13.3,Pending
+FINC-040,SHP-0157,CAR-009,WH-008,STR-014,2026-03-11,Weather Disruption,Critical,Logistics incident during transit from WH-008 to STR-014. Carrier reported fuel shortage at regional depot.,67.0,Resolved
+FINC-041,SHP-0207,CAR-008,WH-008,STR-005,2025-04-24,Traffic Delay,Low,Logistics incident during transit from WH-008 to STR-005. Congestion at receiving dock pushed delivery to next day.,51.1,Closed
+FINC-042,SHP-0257,CAR-005,WH-005,STR-008,2025-06-28,Customs Hold,High,Logistics incident during transit from WH-005 to STR-008. Customs inspection held shipment for additional documentation.,26.0,Resolved
+FINC-043,SHP-0196,CAR-000,WH-005,STR-015,2026-01-29,Weather Disruption,Low,Logistics incident during transit from WH-005 to STR-015. Severe weather conditions forced route change adding 8 hours.,37.0,Pending
+FINC-044,SHP-0166,CAR-012,WH-004,STR-001,2025-12-05,Driver Shortage,High,Logistics incident during transit from WH-004 to STR-001. Severe weather conditions forced route change adding 8 hours.,71.0,Resolved
+FINC-045,SHP-0213,CAR-003,WH-005,STR-022,2025-03-30,Traffic Delay,Medium,Logistics incident during transit from WH-005 to STR-022. Shipment was delayed due to unexpected road closure.,63.6,Resolved
+FINC-046,SHP-0353,CAR-012,WH-001,STR-017,2025-04-10,Route Closure,Critical,Logistics incident during transit from WH-001 to STR-017. Vehicle experienced mechanical failure requiring roadside repair.,2.1,Resolved
+FINC-047,SHP-0003,CAR-014,WH-001,STR-003,2025-11-03,Fuel Shortage,Medium,Logistics incident during transit from WH-001 to STR-003. Shipment was delayed due to unexpected road closure.,58.0,Escalated
+FINC-048,SHP-0046,CAR-004,WH-001,STR-018,2025-07-16,Driver Shortage,Low,Logistics incident during transit from WH-001 to STR-018. Vehicle experienced mechanical failure requiring roadside repair.,39.5,Escalated
+FINC-049,SHP-0062,CAR-012,WH-006,STR-003,2025-08-19,Cargo Theft Attempt,Medium,Logistics incident during transit from WH-006 to STR-003. Congestion at receiving dock pushed delivery to next day.,14.4,Closed
+FINC-050,SHP-0113,CAR-002,WH-006,STR-025,2025-06-02,Customs Hold,Critical,Logistics incident during transit from WH-006 to STR-025. Congestion at receiving dock pushed delivery to next day.,4.7,Resolved
+FINC-051,SHP-0196,CAR-000,WH-005,STR-015,2026-01-28,Traffic Delay,Medium,Logistics incident during transit from WH-005 to STR-015. Carrier reported fuel shortage at regional depot.,14.6,Pending
+FINC-052,SHP-0064,CAR-004,WH-003,STR-029,2025-08-06,Driver Shortage,High,Logistics incident during transit from WH-003 to STR-029. Congestion at receiving dock pushed delivery to next day.,66.4,Closed
+FINC-053,SHP-0347,CAR-002,WH-001,STR-022,2025-03-23,Customs Hold,Critical,Logistics incident during transit from WH-001 to STR-022. Carrier reported fuel shortage at regional depot.,40.8,Escalated
+FINC-054,SHP-0156,CAR-002,WH-006,STR-025,2026-01-05,Weather Disruption,High,Logistics incident during transit from WH-006 to STR-025. Customs inspection held shipment for additional documentation.,36.4,Closed
+FINC-055,SHP-0026,CAR-014,WH-006,STR-024,2025-09-03,Vehicle Breakdown,Low,Logistics incident during transit from WH-006 to STR-024. Customs inspection held shipment for additional documentation.,61.1,Resolved
+FINC-056,SHP-0328,CAR-010,WH-003,STR-028,2025-10-09,Route Closure,Low,Logistics incident during transit from WH-003 to STR-028. Customs inspection held shipment for additional documentation.,40.2,Pending
+FINC-057,SHP-0179,CAR-001,WH-006,STR-022,2025-06-08,Weather Disruption,Low,Logistics incident during transit from WH-006 to STR-022. Customs inspection held shipment for additional documentation.,15.9,Closed
+FINC-058,SHP-0255,CAR-014,WH-001,STR-006,2025-12-10,Fuel Shortage,Critical,Logistics incident during transit from WH-001 to STR-006. Driver scheduling conflict caused 24-hour delay at origin hub.,3.7,Resolved
+FINC-059,SHP-0202,CAR-000,WH-001,STR-001,2026-01-07,Cargo Theft Attempt,Low,Logistics incident during transit from WH-001 to STR-001. Severe weather conditions forced route change adding 8 hours.,36.8,Escalated

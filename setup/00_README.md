@@ -104,10 +104,15 @@ Snowflake and Microsoft Fabric through a unified AI Foundry orchestrator.**
 ```
 .
 ├── README.md                                   # This guide
-├── transportation_freight_costs.csv            # Fabric Lakehouse data (40 rows)
-├── customer_returns_complaints.csv             # Fabric Lakehouse data (40 rows)
+├── fabric_csv/                                 # Fabric Lakehouse data (CSV files)
+│   ├── carriers.csv                            # Carrier profiles
+│   ├── delivery_status.csv                     # Delivery status records
+│   ├── logistics_incidents_fabric.csv          # Logistics incident reports
+│   ├── shipments.csv                           # Shipment tracking data
+│   ├── store_sales.csv                         # Store sales transactions
+│   └── transportation_routes.csv               # Transportation route data
 └── setup/
-    ├── 00_README.md                            # Setup guide (copy)
+    ├── 00_README.md                            # Setup guide (this file)
     ├── 01_database_and_warehouse.sql           # Phase 1, Step 1
     ├── 02_create_tables.sql                    # Phase 1, Step 2
     ├── 03_load_structured_data.sql             # Phase 1, Step 3
@@ -117,7 +122,7 @@ Snowflake and Microsoft Fabric through a unified AI Foundry orchestrator.**
     ├── 07_semantic_view.sql                    # Phase 1, Step 7
     ├── 08_cortex_agent.sql                     # Phase 1, Step 8
     ├── 09_mcp_server.sql                       # Phase 1, Step 9
-    └── 10_foundry_instructions.md              # Phase 3, Step 19 (agent instructions)
+    └── 10_foundry_instructions.md              # Phase 3, Step 19 (orchestrator instructions)
 ```
 
 ---
@@ -316,14 +321,15 @@ Creates the semantic view `SUPPLY_CHAIN_ANALYTICS` using the Cortex Analyst (CA)
 
 > **Script:** `setup/08_cortex_agent.sql`
 
-Creates `SUPPLY_CHAIN_AGENT` with 4 tools:
+Creates `SUPPLY_CHAIN_AGENT` with 3 tools:
 
 | Tool Name | Type | Purpose | Data Source |
 |---|---|---|---|
 | `Analyst` | `CORTEX_ANALYST` | Natural language to SQL | Semantic view (7 structured tables) |
 | `SupplierEmailSearch` | `CORTEX_SEARCH` | Search supplier emails | SUPPLIER_COMMS_SEARCH |
-| `IncidentSearch` | `CORTEX_SEARCH` | Search incident reports | INCIDENT_REPORTS_SEARCH |
 | `InspectionSearch` | `CORTEX_SEARCH` | Search inspection notes | WAREHOUSE_INSPECTIONS_SEARCH |
+
+> **Note:** Incident reports and logistics data are managed in Microsoft Fabric and are not included in the Snowflake agent.
 
 Configuration: **Model:** auto | **Budget:** 16,000 tokens per response
 
@@ -442,20 +448,23 @@ SHOW MCP SERVERS IN SUPPLY_CHAIN_DEMO.PUBLIC;
 
 ### Step 12 — Upload CSV Files to the Lakehouse
 
-Two CSV files are included in the project root:
+Six CSV files are included in the `fabric_csv/` directory:
 
 | File | Description | Rows | Key Columns |
 |---|---|---|---|
-| `transportation_freight_costs.csv` | Freight rates, carrier invoices, detention charges, damage claims | 40 | freight_id, shipment_id, carrier, total_freight_cost, invoice_status, damage_claim_amount, carrier_rating |
-| `customer_returns_complaints.csv` | Return reasons, RMA tracking, refunds, satisfaction scores | 40 | return_id, product_name, supplier_name, is_supplier_defect, complaint_severity, customer_satisfaction_score, sla_breached |
+| `carriers.csv` | Carrier profiles, on-time rates, fleet sizes | 15 | carrier_id, carrier_name, on_time_rate, fleet_size |
+| `shipments.csv` | Shipment tracking with carrier and warehouse links | 400 | shipment_id, po_id, carrier_id, warehouse_id, store_id, status |
+| `store_sales.csv` | Store sales transactions | 1,500 | sale_id, store_id, product_id, quantity_sold, total_revenue |
+| `delivery_status.csv` | Delivery outcomes with on-time flags and delay days | 256 | delivery_id, shipment_id, store_id, on_time, delay_days |
+| `logistics_incidents_fabric.csv` | Logistics incidents with severity and resolution | 60 | incident_id, shipment_id, carrier_id, incident_type, severity |
+| `transportation_routes.csv` | Routes between warehouses, stores, and carriers | 50 | route_id, warehouse_id, store_id, carrier_id, distance_miles |
 
 **Upload steps:**
 
 1. In the Lakehouse explorer, click the **Files** folder
 2. Click the **...** (ellipsis) menu next to **Files** > **New subfolder** > name it `supply_chain_data`
 3. Click the **...** menu next to `supply_chain_data` > **Upload** > **Upload files**
-4. Select `transportation_freight_costs.csv` and upload it
-5. Repeat for `customer_returns_complaints.csv`
+4. Select all 6 CSV files from the `fabric_csv/` directory and upload them
 
 ---
 
@@ -464,36 +473,40 @@ Two CSV files are included in the project root:
 For each CSV file:
 
 1. In the Lakehouse explorer, navigate to **Files** > `supply_chain_data`
-2. Click the **...** menu next to `transportation_freight_costs.csv`
+2. Click the **...** menu next to each CSV file
 3. Select **Load to Tables** > **New table**
-4. Table name: `transportation_freight_costs`
+4. Use the filename (without `.csv`) as the table name
 5. Click **Load**
-6. Repeat for `customer_returns_complaints.csv` with table name: `customer_returns_complaints`
+
+Repeat for all 6 files: `carriers`, `shipments`, `store_sales`, `delivery_status`, `logistics_incidents_fabric`, `transportation_routes`
 
 ---
 
 ### Step 14 — Verify the Lakehouse Tables
 
-1. In the Lakehouse explorer, expand **Tables** > **dbo** and confirm both tables appear
+1. In the Lakehouse explorer, expand **Tables** > **dbo** and confirm all 6 tables appear
 2. Click each table to preview data
 3. Switch to **SQL analytics endpoint** (top-right dropdown) and run:
 
 ```sql
--- Verify freight data
-SELECT carrier, COUNT(*) AS shipment_count,
-       AVG(total_freight_cost) AS avg_cost,
-       SUM(CASE WHEN on_time = 'No' THEN 1 ELSE 0 END) AS late_count
-FROM transportation_freight_costs
-GROUP BY carrier
-ORDER BY avg_cost DESC;
+-- Verify shipments data
+SELECT status, COUNT(*) AS shipment_count
+FROM shipments
+GROUP BY status
+ORDER BY shipment_count DESC;
 
--- Verify returns data
-SELECT reason_category, COUNT(*) AS return_count,
-       SUM(refund_amount) AS total_refunds,
-       AVG(customer_satisfaction_score) AS avg_satisfaction
-FROM customer_returns_complaints
-GROUP BY reason_category
-ORDER BY return_count DESC;
+-- Verify store sales data
+SELECT payment_method, COUNT(*) AS sale_count,
+       SUM(total_revenue) AS total_revenue
+FROM store_sales
+GROUP BY payment_method
+ORDER BY total_revenue DESC;
+
+-- Verify delivery status
+SELECT on_time, COUNT(*) AS delivery_count,
+       AVG(delay_days) AS avg_delay
+FROM delivery_status
+GROUP BY on_time;
 ```
 
 ---
@@ -502,16 +515,20 @@ ORDER BY return_count DESC;
 
 1. In the `SupplyChainDemo` workspace, click **+ New item**
 2. Search for **Data Agent** and select **Fabric data agent** (Preview)
-3. Name it: `SupplyChainFreightReturnsAgent`
+3. Name it: `sc_fabric_agent`
 4. Click **Create**
 
 #### Add the Lakehouse as a Data Source
 
 1. In the OneLake catalog that appears, find and select `SupplyChainLakehouse`
 2. Click **Add**
-3. In the Explorer pane, expand the lakehouse and select both tables:
-   - `transportation_freight_costs`
-   - `customer_returns_complaints`
+3. In the Explorer pane, expand the lakehouse and select all 6 tables:
+   - `carriers`
+   - `shipments`
+   - `store_sales`
+   - `delivery_status`
+   - `logistics_incidents_fabric`
+   - `transportation_routes`
 
 #### Add Data Agent Instructions
 
@@ -521,29 +538,25 @@ Click the **Data agent instructions** button (top right) and paste:
 <summary><b>Click to expand instructions</b></summary>
 
 ```
-You are a Supply Chain Data Agent specializing in transportation costs and customer returns.
+You are a Supply Chain Data Agent for logistics and sales data.
 
-Data Source: SupplyChainLakehouse with two tables:
+Data Source: SupplyChainLakehouse with six tables:
 
-1. transportation_freight_costs — Contains freight shipment details including:
-   carrier, origin_city, destination_warehouse_id, service_level, weight_kg,
-   freight_rate_per_kg, fuel_surcharge_pct, total_freight_cost, invoice_status,
-   detention_hours, detention_charge, damage_claim_amount, on_time, carrier_rating, notes
-
-2. customer_returns_complaints — Contains customer return details including:
-   product_name, category, return_reason, reason_category, quantity_returned,
-   refund_amount, return_channel, condition_on_return, rma_status, supplier_name,
-   is_supplier_defect, complaint_severity, customer_satisfaction_score,
-   sla_days, actual_resolution_days, sla_breached, resolution_type, agent_notes
+1. carriers — Carrier profiles: carrier_id, carrier_name, on_time_rate, avg_transit_days, fleet_size, service_regions
+2. shipments — Shipment tracking: shipment_id, po_id, carrier_id, warehouse_id, store_id, ship_date, estimated_arrival, actual_arrival, status, weight_kg, shipping_cost_usd
+3. store_sales — Sales transactions: sale_id, store_id, product_id, sale_date, quantity_sold, unit_price, total_revenue, payment_method, customer_type
+4. delivery_status — Delivery outcomes: delivery_id, shipment_id, store_id, expected_date, actual_date, on_time, delay_days, delivery_condition, receiver_name
+5. logistics_incidents_fabric — Incidents: incident_id, shipment_id, carrier_id, warehouse_id, store_id, incident_date, incident_type, severity, description, delay_hours, resolution
+6. transportation_routes — Routes: route_id, warehouse_id, store_id, carrier_id, distance_miles, avg_transit_hours, route_type, is_active
 
 Guidelines:
-- For freight cost questions, use the transportation_freight_costs table
-- For return/complaint questions, use the customer_returns_complaints table
+- For sales questions, use the store_sales table
+- For shipment/delivery questions, join shipments with delivery_status on shipment_id
+- For carrier performance, join carriers with shipments on carrier_id
+- For logistics incidents, use logistics_incidents_fabric
+- For route analysis, use transportation_routes
 - Always include relevant context: trends, comparisons, totals
-- Flag critical issues: disputed invoices, safety issues, SLA breaches
-- When asked about suppliers, cross-reference is_supplier_defect field
-- Carrier ratings range from 1-5 (5 = best)
-- Complaint severity: Critical > High > Medium > Low
+- Flag critical issues: late deliveries, high-severity incidents, inactive routes
 ```
 
 </details>
@@ -553,47 +566,49 @@ Guidelines:
 Click **Example queries** and add these question-SQL pairs:
 
 <details>
-<summary><b>Question 1:</b> Which carriers have the highest freight costs per kg?</summary>
+<summary><b>Question 1:</b> Which carriers have the most late deliveries?</summary>
 
 ```sql
-SELECT carrier,
-       COUNT(*) AS total_shipments,
-       ROUND(AVG(freight_rate_per_kg), 2) AS avg_rate_per_kg,
-       ROUND(AVG(total_freight_cost), 2) AS avg_total_cost,
-       ROUND(AVG(carrier_rating), 1) AS avg_rating
-FROM transportation_freight_costs
-GROUP BY carrier
-ORDER BY avg_rate_per_kg DESC
+SELECT c.carrier_name,
+       COUNT(*) AS total_deliveries,
+       SUM(CASE WHEN d.on_time = 'No' THEN 1 ELSE 0 END) AS late_count,
+       ROUND(AVG(d.delay_days), 1) AS avg_delay_days
+FROM delivery_status d
+JOIN shipments s ON d.shipment_id = s.shipment_id
+JOIN carriers c ON s.carrier_id = c.carrier_id
+WHERE d.on_time = 'No'
+GROUP BY c.carrier_name
+ORDER BY late_count DESC
 ```
 
 </details>
 
 <details>
-<summary><b>Question 2:</b> Which suppliers have the most product defect returns?</summary>
+<summary><b>Question 2:</b> Which products have the highest total sales revenue?</summary>
 
 ```sql
-SELECT supplier_name,
-       COUNT(*) AS total_returns,
-       SUM(refund_amount) AS total_refund_amount,
-       ROUND(AVG(customer_satisfaction_score), 1) AS avg_satisfaction,
-       SUM(CASE WHEN complaint_severity = 'Critical' THEN 1 ELSE 0 END) AS critical_count
-FROM customer_returns_complaints
-WHERE is_supplier_defect = 'Yes'
-GROUP BY supplier_name
-ORDER BY total_returns DESC
+SELECT product_id,
+       COUNT(*) AS total_sales,
+       SUM(quantity_sold) AS total_units,
+       ROUND(SUM(total_revenue), 2) AS total_revenue
+FROM store_sales
+GROUP BY product_id
+ORDER BY total_revenue DESC
+LIMIT 10
 ```
 
 </details>
 
 <details>
-<summary><b>Question 3:</b> Show disputed or outstanding freight invoices</summary>
+<summary><b>Question 3:</b> Show high-severity logistics incidents</summary>
 
 ```sql
-SELECT freight_id, carrier, origin_city, total_freight_cost,
-       invoice_number, invoice_status, damage_claim_amount, notes
-FROM transportation_freight_costs
-WHERE invoice_status IN ('Disputed', 'Outstanding')
-ORDER BY total_freight_cost DESC
+SELECT i.incident_id, i.incident_type, i.severity,
+       c.carrier_name, i.incident_date, i.delay_hours, i.resolution
+FROM logistics_incidents_fabric i
+JOIN carriers c ON i.carrier_id = c.carrier_id
+WHERE i.severity IN ('High', 'Critical')
+ORDER BY i.incident_date DESC
 ```
 
 </details>
@@ -602,9 +617,9 @@ ORDER BY total_freight_cost DESC
 
 Use the chat interface to test:
 - "Which carriers have the most late deliveries?"
-- "Show me all safety issue returns"
-- "What is the total damage claim amount by carrier?"
-- "Which suppliers have the highest return rates?"
+- "What are the top 10 products by revenue?"
+- "Show me all high-severity logistics incidents"
+- "What is the average delay by carrier?"
 
 #### Publish the Data Agent
 
@@ -825,7 +840,7 @@ Authentication:
 2. Click **Tools** > **+ Add tool**
 3. Select **Fabric** from the available integrations
    - If Fabric appears as a connected service, select your workspace `SupplyChainDemo`
-   - Select the `SupplyChainFreightReturnsAgent`
+   - Select the `sc_fabric_agent`
 4. Click **Add**
 
 > [!TIP]
@@ -842,18 +857,17 @@ The orchestrator instructions (`setup/10_foundry_instructions.md`) contain routi
 
 | Query Topic | Routed To | Tool Used |
 |---|---|---|
-| Suppliers, reliability scores | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Analyst |
-| Products, categories | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Analyst |
-| Inventory, stock levels, reorder points | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Analyst |
-| Purchase orders, delays | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Analyst |
-| Shipments, carriers, delivery status | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Analyst |
-| Store sales, revenue, channels | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Analyst |
-| Supplier emails | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Search |
-| Incident reports | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Search |
-| Warehouse inspections | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | MCP → Cortex Search |
-| Freight costs, carrier invoices | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="12"> Fabric | Data Agent (NL2SQL) |
-| Customer returns, complaints | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="12"> Fabric | Data Agent (NL2SQL) |
-| Cross-platform analysis | Both | MCP + Data Agent |
+| Suppliers, reliability scores | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | snowflake-mcp-supplychain |
+| Products, categories | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | snowflake-mcp-supplychain |
+| Inventory, stock levels, reorder points | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | snowflake-mcp-supplychain |
+| Purchase orders, delays | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | snowflake-mcp-supplychain |
+| Warehouses, inspections | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | snowflake-mcp-supplychain |
+| Supplier emails | <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="12"> Snowflake | snowflake-mcp-supplychain |
+| Store sales, revenue | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="12"> Fabric | sc_fabric_agent |
+| Shipments, carriers, delivery status | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="12"> Fabric | sc_fabric_agent |
+| Logistics incidents | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="12"> Fabric | sc_fabric_agent |
+| Transportation routes | <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="12"> Fabric | sc_fabric_agent |
+| Cross-platform analysis | Both | snowflake-mcp-supplychain + sc_fabric_agent |
 
 ---
 
@@ -871,36 +885,35 @@ The orchestrator instructions (`setup/10_foundry_instructions.md`) contain routi
 
 In your Foundry agent's chat interface, test these queries:
 
-#### <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="16"> Snowflake-routed queries (via MCP)
+#### <img src="https://cdn.simpleicons.org/snowflake/29B5E8" width="16"> Snowflake-routed queries (via snowflake-mcp-supplychain)
 
 1. "Which suppliers have reliability scores below 0.7?"
 2. "What products are at risk of stockout in the next 5 days?"
 3. "Show me all purchase orders delayed by more than 10 days"
 4. "Search supplier emails about pricing changes"
 5. "Show me warehouse inspection reports with Poor ratings"
-6. "What incidents involved temperature violations?"
 
-#### <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="16"> Fabric-routed queries
+#### <img src="https://img.shields.io/badge/-742774?style=flat-square&logo=microsoft&logoColor=white" height="16"> Fabric-routed queries (via sc_fabric_agent)
 
-7. "Which carriers have the highest freight costs per kg?"
-8. "Show me all disputed freight invoices"
-9. "What products have the most customer returns due to defects?"
-10. "Which suppliers have critical safety issues in customer returns?"
+6. "Which products have the highest sales?"
+7. "Which carriers have the most late deliveries?"
+8. "Show me all high-severity logistics incidents"
+9. "What are the busiest transportation routes?"
 
-#### Cross-platform queries (both data sources)
+#### Cross-platform queries (both tools)
 
-11. "Which suppliers have both high delivery delays AND high return rates?"
-    - *Expected: Agent queries Snowflake for delay data AND Fabric for return data, then synthesizes*
-12. "Compare Shenzhen Fast Supply's performance across shipments, POs, and customer complaints"
-    - *Expected: Agent queries Snowflake for PO/shipment data AND Fabric for return data*
+10. "Which high-sales products are at stockout risk?"
+    - *Expected: Agent calls Fabric for top sales, Snowflake for inventory levels, matches on product_id*
+11. "Which suppliers have both high delivery delays AND low reliability scores?"
+    - *Expected: Agent calls Fabric for delivery data AND Snowflake for supplier reliability*
 
-| Query Type | Data Source | Tool Used |
+| Query Type | Tool | Data Source |
 |---|---|---|
-| Inventory levels | Snowflake | MCP → Cortex Analyst |
-| Supplier emails | Snowflake | MCP → Cortex Search |
-| Freight costs | Fabric | Data Agent (NL2SQL) |
-| Customer returns | Fabric | Data Agent (NL2SQL) |
-| Cross-platform | Both | MCP + Data Agent |
+| Inventory, suppliers, POs | snowflake-mcp-supplychain | Snowflake |
+| Supplier emails, inspections | snowflake-mcp-supplychain | Snowflake |
+| Sales, shipments, deliveries | sc_fabric_agent | Fabric |
+| Logistics incidents, routes | sc_fabric_agent | Fabric |
+| Cross-platform | Both tools | Snowflake + Fabric |
 
 ---
 
@@ -952,12 +965,16 @@ curl -X POST "https://<YOUR-FOUNDRY-RESOURCE>.services.ai.azure.com/api/projects
 </details>
 
 <details>
-<summary><b>Fabric Lakehouse Data</b> — via Data Agent</summary>
+<summary><b>Fabric Lakehouse Data</b> — via sc_fabric_agent</summary>
 
 | Table | Rows | Key Data |
 |---|---|---|
-| `transportation_freight_costs` | 40 | 6 carriers, invoice statuses, detention charges, damage claims |
-| `customer_returns_complaints` | 40 | Linked to Snowflake suppliers/products, severity levels, SLA tracking |
+| `carriers` | 15 | Carrier profiles, on-time rates, fleet sizes |
+| `shipments` | 400 | Shipment tracking with PO, carrier, warehouse, store links |
+| `store_sales` | 1,500 | Sales transactions with product, store, revenue |
+| `delivery_status` | 256 | Delivery outcomes, on-time flags, delay days |
+| `logistics_incidents_fabric` | 60 | Incident reports with severity and resolution |
+| `transportation_routes` | 50 | Routes between warehouses, stores, carriers |
 
 </details>
 
@@ -993,7 +1010,7 @@ DROP SECURITY INTEGRATION IF EXISTS foundry_mcp_oauth;
 ```
 
 **Fabric:**
-1. Delete the `SupplyChainFreightReturnsAgent` data agent
+1. Delete the `sc_fabric_agent` data agent
 2. Delete the `SupplyChainLakehouse` lakehouse
 3. Delete the `SupplyChainDemo` workspace
 

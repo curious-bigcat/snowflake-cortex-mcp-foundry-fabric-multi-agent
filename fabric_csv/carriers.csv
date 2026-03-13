@@ -1,0 +1,16 @@
+carrier_id,carrier_name,on_time_rate,avg_transit_days,fleet_size,service_regions
+CAR-000,FastFreight Logistics,0.85,2.2,160,West Coast
+CAR-001,TransGlobal Shipping,0.69,7.9,366,Nationwide
+CAR-002,ExpressRoute Carriers,0.95,2.7,236,National
+CAR-003,PrimeHaul Transport,0.61,3.7,278,Southeast
+CAR-004,SwiftMove Inc,0.61,3.6,352,Nationwide
+CAR-005,Continental Freight,0.81,3.8,321,East Coast
+CAR-006,Pacific Carriers Ltd,0.92,2.1,432,West Coast
+CAR-007,MidWest Express,0.87,4.7,99,West Coast
+CAR-008,SouthBound Logistics,0.97,4.7,67,Central
+CAR-009,NorthStar Transport,0.64,8.8,329,East Coast
+CAR-010,EagleWing Freight,0.91,7.8,294,National
+CAR-011,OceanBridge Shipping,0.98,5.0,302,East Coast
+CAR-012,RoadRunner Transport,0.92,6.9,461,East Coast
+CAR-013,SkyHigh Logistics,0.83,7.6,43,Nationwide
+CAR-014,GroundForce Carriers,0.69,4.3,60,West Coast
